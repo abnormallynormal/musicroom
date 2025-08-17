@@ -38,7 +38,7 @@ export default function RepertoirePage() {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <SafeAreaView className="px-4 py-8 flex-1">
         <View>
-          <Text className="text-4xl font-bold mb-4">Your repertoire</Text>
+          <Text className="text-4xl font-extrabold mb-4">Your repertoire</Text>
           <TextInput
             placeholder="Search for pieces..."
             className="p-2 rounded-md mb-4 border border-gray-500"
@@ -46,8 +46,8 @@ export default function RepertoirePage() {
           <FlatList
             data={repertoire}
             renderItem={({ item }: { item: piece }) => (
-              <Card style={{ marginBottom: 8, position: "relative" }}>
-                <Card.Content className="px-4 py-2">
+              <Card className="!bg-white" style={{ marginBottom: 8, position: "relative" }}>
+                <Card.Content className="px-4 pt-2 pb-4">
                   <View className="relative">
                     <View className="flex-row justify-between items-center">
                       <Text className="text-xl font-semibold">
@@ -68,7 +68,6 @@ export default function RepertoirePage() {
                                 lastPracticed: item.lastPracticed,
                               },
                             }
-                            // `/repertoire/${item.id}?title=${encodeURIComponent(item.title)}&composer=${encodeURIComponent(item.composer)}&status=${encodeURIComponent(item.status)}&lastPracticed=${encodeURIComponent(item.lastPracticed)}`
                           );
                         }}
                       />
@@ -76,7 +75,7 @@ export default function RepertoirePage() {
                     <Text className="text-base text-gray-500">
                       {item.composer}
                     </Text>
-                    <Text className="text-base text-gray-500 mb-4">
+                    <Text className="text-base text-gray-500 mb-2">
                       {item.status}
                     </Text>
                     <Text className="text-base text-gray-500">
