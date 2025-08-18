@@ -7,17 +7,17 @@ module.exports = {
   ],
   presets: [require("nativewind/preset")],
   theme: {
-    fontFamily: {
-      thin: ["Outfit_100Thin"],
-      extralight: ["Outfit_200ExtraLight"],
-      light: ["Outfit_300Light"],
-      sans: ["Outfit_400Regular"], // Default font
-      medium: ["Outfit_500Medium"],
-      semibold: ["Outfit_600SemiBold"],
-      bold: ["Outfit_700Bold"],
-      extrabold: ["Outfit_800ExtraBold"],
-      black: ["Outfit_900Black"],
-    },
+    // fontFamily: {
+    //   thin: ["Outfit_100Thin"],
+    //   extralight: ["Outfit_200ExtraLight"],
+    //   light: ["Outfit_300Light"],
+    //   sans: ["Outfit_400Regular"], // Default font
+    //   medium: ["Outfit_500Medium"],
+    //   semibold: ["Outfit_600SemiBold"],
+    //   bold: ["Outfit_700Bold"],
+    //   extrabold: ["Outfit_800ExtraBold"],
+    //   black: ["Outfit_900Black"],
+    // },
     fontWeight: {
       thin: "normal",
       extralight: "normal",
