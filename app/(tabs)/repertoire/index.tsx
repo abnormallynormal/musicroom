@@ -2,11 +2,11 @@ import { useRouter } from "expo-router";
 import {
   FlatList,
   Keyboard,
-  Text,
   TextInput,
   TouchableWithoutFeedback,
   View,
 } from "react-native";
+import Text from "@/components/Text";
 import { Card, IconButton } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 export default function RepertoirePage() {
@@ -36,7 +36,7 @@ export default function RepertoirePage() {
   ];
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <SafeAreaView className="px-4 py-8 flex-1">
+      <SafeAreaView className="px-4 py-8 flex-1 bg-white">
         <View>
           <Text className="text-4xl font-extrabold mb-4">Your repertoire</Text>
           <TextInput
@@ -46,7 +46,7 @@ export default function RepertoirePage() {
           <FlatList
             data={repertoire}
             renderItem={({ item }: { item: piece }) => (
-              <Card className="!bg-white" style={{ marginBottom: 8, position: "relative" }}>
+              <Card className="!bg-white" style={{ marginBottom: 12, position: "relative", borderWidth: 0.25 }}>
                 <Card.Content className="px-4 pt-2 pb-4">
                   <View className="relative">
                     <View className="flex-row justify-between items-center">

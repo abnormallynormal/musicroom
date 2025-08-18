@@ -1,7 +1,8 @@
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams } from "expo-router";
 import { useRouter } from "expo-router";
-import { Text, View, ScrollView } from "react-native";
+import {  View, ScrollView } from "react-native";
+import Text from "@/components/Text";
 import { IconButton } from "react-native-paper";
 import { Card } from "react-native-paper";
 export default function PiecePage() {
@@ -68,7 +69,7 @@ export default function PiecePage() {
 
   const router = useRouter();
   return (
-    <SafeAreaView className="bg-primary flex-1 px-4">
+    <SafeAreaView className="bg-primary flex-1 px-4 bg-white">
       <ScrollView showsVerticalScrollIndicator={false}>
         <Text className="text-4xl font-extrabold pt-4 pb-2">{title}</Text>
         <Text className="text-lg text-gray-500 mb-4">{composer}</Text>
@@ -85,6 +86,7 @@ export default function PiecePage() {
             return (
               <Card
                 className="!bg-white p-4 rounded-md shadow-md mb-4"
+                style={{borderWidth: 0.25}}
                 key={item.id}
               >
                 <Card.Content>
@@ -102,6 +104,7 @@ export default function PiecePage() {
           return (
             <Card
               className="!bg-white p-4 rounded-md shadow-md mb-4"
+              style={{ borderWidth: 0.25 }}
               key={item.id}
             >
               <Card.Content>
