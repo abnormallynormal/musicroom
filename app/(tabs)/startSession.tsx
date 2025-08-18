@@ -1,18 +1,18 @@
-import AntDesign from "@expo/vector-icons/AntDesign";
+import Text from "@/components/Text";
+import {Music4, Plus} from "lucide-react-native"
 import {
-  BottomSheetModal,
-  BottomSheetView,
   BottomSheetBackdrop,
   BottomSheetBackdropProps,
+  BottomSheetModal,
+  BottomSheetView,
 } from "@gorhom/bottom-sheet";
-import { useRef, useState, useCallback } from "react";
+import { useCallback, useRef, useState } from "react";
 import {
   FlatList,
   TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
-import Text from "@/components/Text";
 import { Card, SegmentedButtons } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 export default function StartPracticing() {
@@ -20,7 +20,7 @@ export default function StartPracticing() {
   const addGoalModalRef = useRef<BottomSheetModal>(null);
   const [repertoireOrExercises, setRepertoireOrExercises] =
     useState("repertoire");
-  const [practiceQueue, setPracticeQueue] = useState();
+  const [practiceQueue, setPracticeQueue] = useState<piece[]>([]);
   interface piece {
     id: string;
     title: string;
@@ -67,11 +67,25 @@ export default function StartPracticing() {
       </Text>
       <View className="mb-8">
         <Text className="text-2xl font-bold py-2">Select what to practice</Text>
-        <Card>
+        {practiceQueue.map((item) => (
+          <Card
+            key={item.id}
+            style={{ marginBottom: 12, backgroundColor: "#ffffff" }}
+          >
+            <Card.Content className="flex-row items-center gap-4">
+              <Music4 />
+              <View>
+                <Text className="text-lg font-semibold">{item.title}</Text>
+                <Text>{item.composer}</Text>
+              </View>
+            </Card.Content>
+          </Card>
+        ))}
+        <Card style={{ backgroundColor: "#a855f7" }}>
           <TouchableOpacity onPress={handleAddRepertoirePress} className="py-4">
             <Card.Content className="flex-row items-center gap-4">
-              <AntDesign name="plus" size={20} color="black" />
-              <Text className="text-lg font-semibold">
+              <Plus color="#ffffff" />
+              <Text className="text-lg font-semibold text-white">
                 Add repertoire or exercises
               </Text>
             </Card.Content>
@@ -82,11 +96,11 @@ export default function StartPracticing() {
         <Text className="text-2xl font-bold py-2">
           Add goals for this session
         </Text>
-        <Card>
+        <Card style={{ backgroundColor: "#a855f7" }}>
           <TouchableOpacity onPress={handleAddGoalPress} className="py-4">
             <Card.Content className="flex-row items-center gap-4">
-              <AntDesign name="plus" size={20} color="black" />
-              <Text className="text-lg font-semibold">Add goal</Text>
+              <Plus color="#ffffff"/>
+              <Text className="text-lg text-white font-semibold">Add goal</Text>
             </Card.Content>
           </TouchableOpacity>
         </Card>
@@ -131,34 +145,81 @@ export default function StartPracticing() {
               />
               <FlatList
                 data={repertoire}
-                renderItem={({ item }: { item: piece }) => (
-                  <Card
-                    className="!bg-green-50 shadow-green-500"
-                    style={{ marginBottom: 12, position: "relative", borderWidth:0.25 }}
-                  >
-                    <Card.Content className="px-4 pt-2 pb-4">
-                      <View className="relative">
-                        <View className="flex-row justify-between items-center">
-                          <Text className="text-xl font-semibold">
-                            {item.title}
+                renderItem={({ item }: { item: piece }) =>
+                  practiceQueue.some(
+                    (queueItem) => queueItem.id === item.id
+                  ) ? (
+                    <Card
+                      className=" border-green-500"
+                      elevation={2}
+                      style={{
+                        marginBottom: 12,
+                        borderWidth: 1.25,
+                        backgroundColor: "#f0fdf4",
+                      }}
+                      onPress={() => {
+                        console.log(practiceQueue);
+                        setPracticeQueue(
+                          practiceQueue.filter((piece) => piece.id !== item.id)
+                        );
+                      }}
+                    >
+                      <Card.Content className="px-4 pt-2 pb-4">
+                        <View className="relative">
+                          <View className="flex-row justify-between items-center">
+                            <Text className="text-xl font-semibold">
+                              {item.title}
+                            </Text>
+                          </View>
+                          <Text className="text-base text-gray-500">
+                            {item.composer}
+                          </Text>
+                          <Text className="text-base text-gray-500 mb-2">
+                            {item.status}
+                          </Text>
+                          <Text className="text-base text-gray-500">
+                            Last Practiced: {item.lastPracticed}
                           </Text>
                         </View>
-                        <Text className="text-base text-gray-500">
-                          {item.composer}
-                        </Text>
-                        <Text className="text-base text-gray-500 mb-2">
-                          {item.status}
-                        </Text>
-                        <Text className="text-base text-gray-500">
-                          Last Practiced: {item.lastPracticed}
-                        </Text>
-                      </View>
-                    </Card.Content>
-                  </Card>
-                )}
+                      </Card.Content>
+                    </Card>
+                  ) : (
+                    <Card
+                      elevation={1}
+                      style={{
+                        marginBottom: 12,
+                        borderWidth: 0.25,
+                        backgroundColor: "#ffffff",
+                      }}
+                      onPress={() => {
+                        console.log(practiceQueue);
+                        setPracticeQueue([...practiceQueue, item]);
+                      }}
+                    >
+                      <Card.Content className="px-4 pt-2 pb-4">
+                        <View className="relative">
+                          <View className="flex-row justify-between items-center">
+                            <Text className="text-xl font-semibold">
+                              {item.title}
+                            </Text>
+                          </View>
+                          <Text className="text-base text-gray-500">
+                            {item.composer}
+                          </Text>
+                          <Text className="text-base text-gray-500 mb-2">
+                            {item.status}
+                          </Text>
+                          <Text className="text-base text-gray-500">
+                            Last Practiced: {item.lastPracticed}
+                          </Text>
+                        </View>
+                      </Card.Content>
+                    </Card>
+                  )
+                }
               />
             </View>
-          )}  
+          )}
           {repertoireOrExercises === "exercises" && (
             <TextInput
               placeholder="Search for exercises..."
