@@ -1,12 +1,24 @@
-import { SafeAreaView } from "react-native-safe-area-context";
-import { useLocalSearchParams } from "expo-router";
-import { useRouter } from "expo-router";
-import {  View, ScrollView } from "react-native";
+import DocumentSelector from "@/components/DocumentPicker";
 import Text from "@/components/Text";
-import { IconButton } from "react-native-paper";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { useState } from "react";
+import { FlatList, ScrollView, View } from "react-native";
 import { Card } from "react-native-paper";
+import { SafeAreaView } from "react-native-safe-area-context";
+import ScoreFileCard from "@/components/ScoreFileCard";
 export default function PiecePage() {
   const { id, title, composer, status, lastPracticed } = useLocalSearchParams();
+  
+  interface ScoreFile {
+    name: string;
+    size: number;
+    uri: string;
+  }
+  
+  const [scores, setScores] = useState<ScoreFile[]>([]);
+  const handleFileSelect = (file: ScoreFile) => {
+    setScores(prevScores => [...prevScores, file]);
+  };
   interface piecePracticeSession {
     id: number;
     date: string;
@@ -47,35 +59,32 @@ export default function PiecePage() {
     },
   ];
 
-  const pieceNotes: pieceNote[] = [
-    {
-      id: 0,
-      date: "2023-10-01",
-      notes:
-        "Focus on dynamics Focus on dynamicsFocus on dynamicsFocus on dynamicsFocus on dynamicsFocus on dynamicsFocus on dynamicsFocus on dynamicsFocus on dynamicsFocus on dynamicsFocus on dynamicsFocus on dynamics",
-    },
-    {
-      id: 1,
-      date: "2023-09-28",
-      notes: "Work on tempo",
-    },
-    {
-      id: 2,
-      date: "2023-09-25",
-      notes:
-        "Practice hands separatelyFocus on dynamicsFocus on dynamicsFocus on dynamicsFocus on dynamicsFocus on dynamicsFocus on dynamicsFocus on dynamicsFocus on dynamicsFocus on dynamicsFocus on dynamicsFocus on dynamicsFocus on dynamicsFocus on dynamicsFocus on dynamicsFocus on dynamicsFocus on dynamicsFocus on dynamicsFocus on dynamicsFocus on dynamicsFocus on dynamicsFocus on dynamicsFocus on dynamicsFocus on dynamics",
-    },
-  ];
-
   const router = useRouter();
   return (
-    <SafeAreaView className="bg-primary flex-1 px-4 bg-white">
+    <SafeAreaView className="bg-primary flex-1 px-6 py-8 bg-white">
       <ScrollView showsVerticalScrollIndicator={false}>
-        <Text className="text-4xl font-extrabold pt-4 pb-2">{title}</Text>
+        <Text className="text-4xl font-extrabold mb-1">{title}</Text>
         <Text className="text-lg text-gray-500 mb-4">{composer}</Text>
+        <Text className="text-2xl font-bold mb-2">Resources</Text>
+        <View>
+          <View className="flex-row items-center justify-between mb-2">
+            <Text className="text-lg font-semibold">Scores</Text>
+            <DocumentSelector onFileSelect={handleFileSelect} />
+          </View>
+          <FlatList
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            data={scores}
+            keyExtractor={(item) => item.name}
+            renderItem={({ item }: { item: ScoreFile }) => (
+              <ScoreFileCard name={item.name} size={item.size} uri={item.uri} />
+
+            )}
+          />
+        </View>
         <View className="flex-row items-center justify-between">
-          <Text className="text-2xl font-bold mb-2">Scores</Text>
-          <Text>Upload file</Text>
+          <Text className="text-lg font-semibold mb-2">Recordings</Text>
+          <Text>Add recording</Text>
         </View>
         <Text className="text-2xl font-bold mb-2">
           Recent practice sessions
@@ -86,7 +95,7 @@ export default function PiecePage() {
             return (
               <Card
                 className="!bg-white p-4 rounded-md shadow-md mb-4"
-                style={{borderWidth: 0.25}}
+                style={{ borderWidth: 0.25 }}
                 key={item.id}
               >
                 <Card.Content>
@@ -99,21 +108,6 @@ export default function PiecePage() {
               </Card>
             );
           })}
-        <Text className="text-2xl font-bold m-2">Practice notes</Text>
-        {pieceNotes.slice(0, 3).map((item: pieceNote) => {
-          return (
-            <Card
-              className="!bg-white p-4 rounded-md shadow-md mb-4"
-              style={{ borderWidth: 0.25 }}
-              key={item.id}
-            >
-              <Card.Content>
-                <Text className="text-lg font-bold">{item.date}</Text>
-                <Text className="text-gray-500">Notes: {item.notes}</Text>
-              </Card.Content>
-            </Card>
-          );
-        })}
       </ScrollView>
     </SafeAreaView>
   );

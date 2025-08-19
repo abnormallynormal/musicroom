@@ -1,5 +1,5 @@
 import Text from "@/components/Text";
-import {Music4, Plus} from "lucide-react-native"
+import { Dumbbell, Music4, Plus } from "lucide-react-native";
 import {
   BottomSheetBackdrop,
   BottomSheetBackdropProps,
@@ -7,12 +7,7 @@ import {
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
 import { useCallback, useRef, useState } from "react";
-import {
-  FlatList,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { FlatList, TextInput, TouchableOpacity, View } from "react-native";
 import { Card, SegmentedButtons } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 export default function StartPracticing() {
@@ -20,17 +15,19 @@ export default function StartPracticing() {
   const addGoalModalRef = useRef<BottomSheetModal>(null);
   const [repertoireOrExercises, setRepertoireOrExercises] =
     useState("repertoire");
-  const [practiceQueue, setPracticeQueue] = useState<piece[]>([]);
-  interface piece {
+  const [practiceQueue, setPracticeQueue] = useState<practiceItem[]>([]);
+  interface practiceItem {
     id: string;
+    type: "repertoire" | "exercises";
     title: string;
-    composer: string;
-    status: string;
+    composer: string | null;
+    status: string | null;
     lastPracticed: string;
   }
-  const repertoire: piece[] = [
+  const repertoire: practiceItem[] = [
     {
       id: "123",
+      type: "repertoire",
       title: "Clair de Lune",
       composer: "Claude Debussy",
       status: "Practicing",
@@ -38,9 +35,28 @@ export default function StartPracticing() {
     },
     {
       id: "456",
+      type: "repertoire",
       title: "Moonlight Sonata",
       composer: "Ludwig van Beethoven",
       status: "Completed",
+      lastPracticed: "2023-09-15",
+    },
+  ];
+  const exercises: practiceItem[] = [
+    {
+      id: "888",
+      type: "exercises",
+      title: "C major scale",
+      composer: null,
+      status: null,
+      lastPracticed: "2023-10-01",
+    },
+    {
+      id: "445",
+      type: "exercises",
+      title: "Moonlight Sonata",
+      composer: null,
+      status: null,
       lastPracticed: "2023-09-15",
     },
   ];
@@ -73,10 +89,10 @@ export default function StartPracticing() {
             style={{ marginBottom: 12, backgroundColor: "#ffffff" }}
           >
             <Card.Content className="flex-row items-center gap-4">
-              <Music4 />
+              {item.type === "repertoire" ? <Music4 /> : <Dumbbell />}
               <View>
                 <Text className="text-lg font-semibold">{item.title}</Text>
-                <Text>{item.composer}</Text>
+                {item.type === "repertoire" && <Text>{item.composer}</Text>}
               </View>
             </Card.Content>
           </Card>
@@ -99,7 +115,7 @@ export default function StartPracticing() {
         <Card style={{ backgroundColor: "#a855f7" }}>
           <TouchableOpacity onPress={handleAddGoalPress} className="py-4">
             <Card.Content className="flex-row items-center gap-4">
-              <Plus color="#ffffff"/>
+              <Plus color="#ffffff" />
               <Text className="text-lg text-white font-semibold">Add goal</Text>
             </Card.Content>
           </TouchableOpacity>
@@ -145,7 +161,7 @@ export default function StartPracticing() {
               />
               <FlatList
                 data={repertoire}
-                renderItem={({ item }: { item: piece }) =>
+                renderItem={({ item }: { item: practiceItem }) =>
                   practiceQueue.some(
                     (queueItem) => queueItem.id === item.id
                   ) ? (
@@ -221,10 +237,76 @@ export default function StartPracticing() {
             </View>
           )}
           {repertoireOrExercises === "exercises" && (
-            <TextInput
-              placeholder="Search for exercises..."
-              className="p-2 rounded-md mt-8 mb-4 border border-gray-500"
-            />
+            <View>
+              <TextInput
+                placeholder="Search for exercises..."
+                className="p-2 rounded-md mt-8 mb-4 border border-gray-500"
+              />
+              <FlatList
+                data={exercises}
+                renderItem={({ item }: { item: practiceItem }) =>
+                  practiceQueue.some(
+                    (queueItem) => queueItem.id === item.id
+                  ) ? (
+                    <Card
+                      className=" border-green-500"
+                      elevation={2}
+                      style={{
+                        marginBottom: 12,
+                        borderWidth: 1.25,
+                        backgroundColor: "#f0fdf4",
+                      }}
+                      onPress={() => {
+                        console.log(practiceQueue);
+                        setPracticeQueue(
+                          practiceQueue.filter((piece) => piece.id !== item.id)
+                        );
+                      }}
+                    >
+                      <Card.Content className="px-4 pt-2 pb-4">
+                        <View className="">
+                          <View className="flex-row justify-between items-center">
+                            <Text className="text-xl font-semibold">
+                              {item.title}
+                            </Text>
+                          </View>
+                          <Text className="text-base text-gray-500">
+                            Last Practiced: {item.lastPracticed}
+                          </Text>
+                        </View>
+                      </Card.Content>
+                    </Card>
+                  ) : (
+                    <Card
+                      elevation={1}
+                      style={{
+                        marginBottom: 12,
+                        borderWidth: 0.25,
+                        backgroundColor: "#ffffff",
+                      }}
+                      onPress={() => {
+                        console.log(practiceQueue);
+                        setPracticeQueue([...practiceQueue, item]);
+                      }}
+                    >
+                      <Card.Content className="px-4 pt-2 pb-4">
+                        <View className="relative">
+                          <View className="flex-row justify-between items-center">
+                            <Text className="text-xl font-semibold">
+                              {item.title}
+                            </Text>
+                          </View>
+
+                          <Text className="text-base text-gray-500">
+                            Last Practiced: {item.lastPracticed}
+                          </Text>
+                        </View>
+                      </Card.Content>
+                    </Card>
+                  )
+                }
+              />
+            </View>
           )}
         </BottomSheetView>
       </BottomSheetModal>

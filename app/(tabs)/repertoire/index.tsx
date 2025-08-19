@@ -1,6 +1,7 @@
 import { useRouter } from "expo-router";
 import {
   FlatList,
+  ScrollView,
   Keyboard,
   TextInput,
   TouchableWithoutFeedback,
@@ -20,14 +21,42 @@ export default function RepertoirePage() {
   }
   const repertoire: piece[] = [
     {
-      id: "123",
+      id: "1",
       title: "Clair de Lune",
       composer: "Claude Debussy",
       status: "Practicing",
       lastPracticed: "2023-10-01",
     },
     {
-      id: "456",
+      id: "2",
+      title: "Moonlight Sonata",
+      composer: "Ludwig van Beethoven",
+      status: "Completed",
+      lastPracticed: "2023-09-15",
+    },
+    {
+      id: "3",
+      title: "Moonlight Sonata",
+      composer: "Ludwig van Beethoven",
+      status: "Completed",
+      lastPracticed: "2023-09-15",
+    },
+    {
+      id: "4",
+      title: "Moonlight Sonata",
+      composer: "Ludwig van Beethoven",
+      status: "Completed",
+      lastPracticed: "2023-09-15",
+    },
+    {
+      id: "5",
+      title: "Moonlight Sonata",
+      composer: "Ludwig van Beethoven",
+      status: "Completed",
+      lastPracticed: "2023-09-15",
+    },
+    {
+      id: "6",
       title: "Moonlight Sonata",
       composer: "Ludwig van Beethoven",
       status: "Completed",
@@ -36,7 +65,7 @@ export default function RepertoirePage() {
   ];
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <SafeAreaView className="px-4 py-8 flex-1 bg-white">
+      <SafeAreaView className="px-6 py-8 flex-1 bg-white">
         <View>
           <Text className="text-4xl font-extrabold mb-4">Your repertoire</Text>
           <TextInput
@@ -45,8 +74,16 @@ export default function RepertoirePage() {
           />
           <FlatList
             data={repertoire}
+            style={{backgroundColor: "#ffff00"}}
             renderItem={({ item }: { item: piece }) => (
-              <Card className="!bg-white" style={{ marginBottom: 12, position: "relative", borderWidth: 0.25 }}>
+              <Card
+                className="!bg-white"
+                style={{
+                  marginBottom: 12,
+                  position: "relative",
+                  borderWidth: 0.25,
+                }}
+              >
                 <Card.Content className="px-4 pt-2 pb-4">
                   <View className="relative">
                     <View className="flex-row justify-between items-center">
@@ -57,18 +94,16 @@ export default function RepertoirePage() {
                         icon="pencil"
                         size={20}
                         onPress={() => {
-                          router.push(
-                            {
-                              pathname: "/repertoire/[id]",
-                              params: {
-                                id: item.id,
-                                title: item.title,
-                                composer: item.composer,
-                                status: item.status,
-                                lastPracticed: item.lastPracticed,
-                              },
-                            }
-                          );
+                          router.push({
+                            pathname: "/repertoire/[id]",
+                            params: {
+                              id: item.id,
+                              title: item.title,
+                              composer: item.composer,
+                              status: item.status,
+                              lastPracticed: item.lastPracticed,
+                            },
+                          });
                         }}
                       />
                     </View>
