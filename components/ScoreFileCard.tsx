@@ -1,11 +1,10 @@
 import { Card } from "react-native-paper";
 import { TouchableOpacity } from "react-native";
 import Text from "./Text";
-import { Linking } from "react-native";
-
-
-
-import * as Sharing from "expo-sharing";
+import * as Linking from "expo-linking"
+import * as FileSystem from "expo-file-system";
+import * as IntentLauncher from "expo-intent-launcher";
+import {Platform} from "react-native"
 interface ScoreFileCardProps {
   name: string;
   size: number;
@@ -13,14 +12,20 @@ interface ScoreFileCardProps {
 }
 export default function ScoreFileCard({ name, size, uri }: ScoreFileCardProps) {
   const openFile = async (uri: string) => {
-    if (!(await Sharing.isAvailableAsync())) {
-      console.log("Sharing not available");
-      return;
+    try {
+      if (Platform.OS === "android" && uri.startsWith("file://")) {
+        const contentUri = await FileSystem.getContentUriAsync(uri);
+        await IntentLauncher.startActivityAsync("android.intent.action.VIEW", {
+          data: contentUri,
+          flags: 1,
+          type: "application/pdf",
+        });
+      } else {
+        await Linking.openURL(uri);
+      }
+    } catch (error) {
+      console.error("Error opening PDF:", error);
     }
-    await Sharing.shareAsync(uri, {
-      UTI: "com.adobe.pdf",
-      mimeType: "application/pdf",
-    });
   };
   return (
     <Card className="!bg-white mb-2 w-96 mr-2 py-4" style={{ borderWidth: 0.25 }}>

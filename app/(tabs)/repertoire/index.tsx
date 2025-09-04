@@ -1,21 +1,13 @@
 import Text from "@/components/Text";
 import { useRouter } from "expo-router";
+import { useState, useMemo, useRef } from "react";
 import { FlatList, TextInput, TouchableOpacity, View } from "react-native";
-import { Card, IconButton } from "react-native-paper";
+import { Card } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 export default function RepertoirePage() {
-  const headerComponent = () => {
-    return (
-      <View>
-        <Text className="text-4xl font-extrabold mb-4">Your repertoire</Text>
-        <TextInput
-          placeholder="Search for pieces..."
-          className="p-2 rounded-md mb-4 border border-gray-500"
-        />
-      </View>
-    );
-  };
+  const [searchTerm, setSearchTerm] = useState("");
   const router = useRouter();
+
   interface piece {
     id: string;
     title: string;
@@ -23,6 +15,7 @@ export default function RepertoirePage() {
     status: string;
     lastPracticed: string;
   }
+
   const repertoire: piece[] = [
     {
       id: "1",
@@ -67,12 +60,27 @@ export default function RepertoirePage() {
       lastPracticed: "2023-09-15",
     },
   ];
+
+  const filteredPieces = repertoire.filter((piece: piece) => {
+    const titleMatch = piece.title.toLowerCase().includes(searchTerm.toLowerCase());
+    const composerMatch = piece.composer.toLowerCase().includes(searchTerm.toLowerCase());
+    return titleMatch || composerMatch;
+  });
+
   return (
     <SafeAreaView className="px-6 py-8 flex-1 bg-white">
-      <FlatList
-        data={repertoire}
-        ListHeaderComponent={headerComponent}
-        showsVerticalScrollIndicator={false}
+      <View style={{ flex: 1 }}>
+        <Text className="text-4xl font-extrabold mb-4">Your repertoire</Text>
+        <TextInput
+          placeholder="Search by piece title or composer..."
+          className="p-2 rounded-md mb-4 border border-gray-500"
+          value={searchTerm}
+          onChangeText={text => setSearchTerm(text)}
+        />
+        <FlatList
+          data={filteredPieces}
+          showsVerticalScrollIndicator={false}
+          style={{ flex: 1 }}
         renderItem={({ item }: { item: piece }) => (
           <Card
             className="!bg-white"
@@ -118,6 +126,7 @@ export default function RepertoirePage() {
         keyExtractor={(item) => item.id}
         keyboardDismissMode="on-drag"
       />
+      </View>
     </SafeAreaView>
   );
 }
