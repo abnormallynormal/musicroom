@@ -1,5 +1,6 @@
 import DocumentSelector from "@/components/DocumentPicker";
 import Text from "@/components/Text";
+import AddRecording from "@/components/AddRecording";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
 import { FlatList, ScrollView, View } from "react-native";
@@ -8,16 +9,16 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import ScoreFileCard from "@/components/ScoreFileCard";
 export default function PiecePage() {
   const { id, title, composer, status, lastPracticed } = useLocalSearchParams();
-  
+
   interface ScoreFile {
     name: string;
     size: number;
     uri: string;
   }
-  
+
   const [scores, setScores] = useState<ScoreFile[]>([]);
   const handleFileSelect = (file: ScoreFile) => {
-    setScores(prevScores => [...prevScores, file]);
+    setScores((prevScores) => [...prevScores, file]);
   };
   interface piecePracticeSession {
     id: number;
@@ -78,13 +79,12 @@ export default function PiecePage() {
             keyExtractor={(item) => item.name}
             renderItem={({ item }: { item: ScoreFile }) => (
               <ScoreFileCard name={item.name} size={item.size} uri={item.uri} />
-
             )}
           />
         </View>
         <View className="flex-row items-center justify-between">
           <Text className="text-lg font-semibold mb-2">Recordings</Text>
-          <Text>Add recording</Text>
+          <AddRecording />
         </View>
         <Text className="text-2xl font-bold mb-2">
           Recent practice sessions
